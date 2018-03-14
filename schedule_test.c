@@ -17,7 +17,7 @@ typedef struct {
 #define BILLION  1000000000L;
 
 int main(void) {
-    system("echo noop > /sys/block/sda/queue/scheduler");
+    system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("hdparm -W 0 /dev/sda");
     int num_threads = 5;
