@@ -19,7 +19,7 @@ typedef struct {
 int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
-    system("hdparm -W 0 /dev/sda");
+    system("sudo hdparm -W 0 /dev/sda");
     int num_threads = 5;
 
     pthread_t threads[num_threads];
@@ -35,7 +35,7 @@ int main(void) {
     for(int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
-    system("hdparm -W 1 /dev/sda");
+    system("sudo hdparm -W 1 /dev/sda");
     return 0;
 }
 
