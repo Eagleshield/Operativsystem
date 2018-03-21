@@ -49,9 +49,9 @@ void *write_test(void *arg) {
     }
     pthread_barrier_wait(&barrier);
     
-    struct timespec start, stop;
+    // struct timespec start, stop;
 
-    clock_gettime(CLOCK_REALTIME, &start);
+    // clock_gettime(CLOCK_REALTIME, &start);
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
@@ -68,10 +68,10 @@ void *write_test(void *arg) {
         fwrite(big_boy, size, 1, fp);;
     }
 
-    clock_gettime(CLOCK_REALTIME, &stop);
-    double accum = (stop.tv_sec - start.tv_sec) + (stop.tv_nsec - start.tv_nsec) / BILLION;
-
-    fprintf(stdout, "%lf\n", accum);    
+    // clock_gettime(CLOCK_REALTIME, &stop);
+    // double accum = (stop.tv_sec - start.tv_sec) + (stop.tv_nsec - start.tv_nsec) / BILLION;
+    // fprintf(stdout, "%lf\n", accum);
+    
     free(big_boy);
 
     fclose(fp);
