@@ -57,27 +57,27 @@ void *write_test(void *arg) {
     file_name[7] = t_args->tids;
     //printf("%s\n", file_name);
 
-	//FILE *fp;
+	FILE *fp;
 	if(t_args->tid%2 == 0) {
 		printf("%s\n", "Why you seg?");
         char *filep = malloc(32*sizeof(char));
         strcpy(filep, "../../testdirectory/");
         strcat(filep, file_name);
-		// fp = fopen(filep, "w");
+		fp = fopen(filep, "w");
 	   printf("%s\n", filep);
     } else {
-		// fp = fopen(file_name, "w");
+		fp = fopen(file_name, "w");
         printf("%s\n", file_name);
 	}
 
-    //perror("fopen");
-    // if(fp == NULL) {
-    //     fprintf(stderr, "%s\n", "File not created.");
-    //     return NULL;
-    // }
-    // for(int i = 0; i < 1; i++) {
-    //     fwrite(big_boy, size, 1, fp);;
-    // }
+    perror("fopen");
+    if(fp == NULL) {
+        fprintf(stderr, "%s\n", "File not created.");
+        return NULL;
+    }
+    for(int i = 0; i < 1; i++) {
+        fwrite(big_boy, size, 1, fp);;
+    }
 
     // clock_gettime(CLOCK_REALTIME, &stop);
     // double accum = (stop.tv_sec - start.tv_sec) + (stop.tv_nsec - start.tv_nsec) / BILLION;
@@ -85,7 +85,7 @@ void *write_test(void *arg) {
 
     free(big_boy);
 
-    // fclose(fp);
+    fclose(fp);
 
     return NULL;
 }
