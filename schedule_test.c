@@ -41,7 +41,7 @@ int main(void) {
 
 void *write_test(void *arg) {
     args *t_args = arg;
-    size_t size = 1000000000;
+    size_t size = 1000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
@@ -67,7 +67,7 @@ void *write_test(void *arg) {
     for(int i = 0; i < 100; i++) {
         fwrite(big_boy, size, 1, fp);;
     }
-    
+    sleep(3);
     clock_gettime(CLOCK_REALTIME, &stop);
     double accum = (stop.tv_sec - start.tv_sec) + (stop.tv_nsec - start.tv_nsec) / BILLION;
 
