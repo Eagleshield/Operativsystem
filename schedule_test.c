@@ -59,7 +59,8 @@ void *write_test(void *arg) {
 
 	//FILE *fp;
 	if(t_args->tid%2 == 0) {
-		char *filep = strcat("../../testdirectory/", file_name);
+		printf("%s\n", "Why you seg?");
+        char *filep = strcat("../../testdirectory/", file_name);
 		// fp = fopen(filep, "w");
 	   printf("%s\n", filep);
     } else {
