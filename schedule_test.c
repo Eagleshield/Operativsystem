@@ -41,7 +41,7 @@ int main(void) {
 
 void *write_test(void *arg) {
     args *t_args = arg;
-    size_t size = 1000000;
+    size_t size = 1000000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
@@ -55,16 +55,20 @@ void *write_test(void *arg) {
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
-    printf("%s\n", file_name);
-
-
-    FILE *fp = fopen(file_name, "w");
+    //printf("%s\n", file_name);
+	FILE *fp;
+	if(t_args->tid%2 == 0) {
+		char *filep = strcat("../../testdirectory/", file_name);
+		fp = fopen(filep, "w");
+	} else {
+		fp = fopen(file_name, "w");
+	}
     perror("fopen");
     if(fp == NULL) {
         fprintf(stderr, "%s\n", "File not created.");
         return NULL;
     }
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 1; i++) {
         fwrite(big_boy, size, 1, fp);;
     }
 
