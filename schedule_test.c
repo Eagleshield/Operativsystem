@@ -41,7 +41,7 @@ int main(void) {
 
 void *write_test(void *arg) {
     args *t_args = arg;
-    size_t size = 1000000;
+    size_t size = 1000000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
