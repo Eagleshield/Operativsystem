@@ -67,7 +67,7 @@ void *write_test(void *arg) {
         printf("%s\n", file_name);
 	}
 
-    perror("fopen");
+    //perror("fopen");
     // if(fp == NULL) {
     //     fprintf(stderr, "%s\n", "File not created.");
     //     return NULL;
