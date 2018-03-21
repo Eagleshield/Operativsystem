@@ -55,7 +55,7 @@ void *write_test(void *arg) {
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
-    printf("%s\n", file_name);
+    //printf("%s\n", file_name);
 
 
     FILE *fp = fopen(file_name, "w");
@@ -71,7 +71,7 @@ void *write_test(void *arg) {
     // clock_gettime(CLOCK_REALTIME, &stop);
     // double accum = (stop.tv_sec - start.tv_sec) + (stop.tv_nsec - start.tv_nsec) / BILLION;
     // fprintf(stdout, "%lf\n", accum);
-    
+
     free(big_boy);
 
     fclose(fp);
