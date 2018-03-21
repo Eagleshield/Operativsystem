@@ -47,7 +47,7 @@ void *write_test(void *arg) {
     for(int i = 0; i < size; i++) {
         big_boy[i] = 'X';
     }
-    pthread_barrier_wait(&barrier);
+        pthread_barrier_wait(&barrier);
     
     // struct timespec start, stop;
 
