@@ -61,7 +61,7 @@ void *write_test(void *arg) {
 	if(t_args->tid%2 == 0) {
 		printf("%s\n", "Why you seg?");
         char *filep = malloc(32*sizeof(char));
-        filep = "../../testdirectory/";
+        strcpy(filep, "../../testdirectory/");
         strcat(filep, file_name);
 		// fp = fopen(filep, "w");
 	   printf("%s\n", filep);
