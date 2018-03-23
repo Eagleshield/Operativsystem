@@ -48,10 +48,6 @@ void *write_test(void *arg) {
         big_boy[i] = 'X';
     }
         pthread_barrier_wait(&barrier);
-    
-    // struct timespec start, stop;
-
-    // clock_gettime(CLOCK_REALTIME, &start);
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
@@ -78,10 +74,6 @@ void *write_test(void *arg) {
     for(int i = 0; i < 1; i++) {
         fwrite(big_boy, size, 1, fp);;
     }
-
-    // clock_gettime(CLOCK_REALTIME, &stop);
-    // double accum = (stop.tv_sec - start.tv_sec) + (stop.tv_nsec - start.tv_nsec) / BILLION;
-    // fprintf(stdout, "%lf\n", accum);
 
     free(big_boy);
 
