@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
-#include <time.h>
+#include <sys/time.h>
 
 void *write_test(void *args);
 pthread_barrier_t barrier;
@@ -37,6 +37,7 @@ int main(void) {
     }
     system("sudo hdparm -W 1 /dev/sda");
     system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
+    system("cat /sys/block/sda/queue/scheduler");
     return 0;
 }
 
@@ -48,7 +49,9 @@ void *write_test(void *arg) {
     for(int i = 0; i < size; i++) {
         big_boy[i] = 'X';
     }
-        pthread_barrier_wait(&barrier);
+    struct timeval tval_before, tval_after, tval_result;
+    pthread_barrier_wait(&barrier);
+    gettimeofday(&tval_before, NULL);
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
@@ -79,6 +82,11 @@ void *write_test(void *arg) {
     free(big_boy);
 
     fclose(fp);
+
+    gettimeofday(&tval_after, NULL);
+    timersub(&tval_after, &tval_before, &tval_result);
+
+    printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
     return NULL;
 }
