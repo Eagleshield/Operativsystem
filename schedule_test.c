@@ -22,7 +22,10 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    run_threads(&write_test, 5);
+    int num_threads = 5;
+
+    run_threads(&write_test, num_threads);
+    pthread_barrier_init(&barrier, NULL, num_threads);
     // int num_threads = 5;
 
     // pthread_t threads[num_threads];
@@ -53,7 +56,6 @@ void run_threads(func_ptr func, int num_threads) {
         t_args[i].tids = i + '0';
         pthread_create(&threads[i], NULL, func, &t_args[i]);
     }
-
     for(int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
