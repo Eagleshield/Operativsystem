@@ -58,7 +58,7 @@ void run_threads(func_ptr func, int num_threads) {
 
 void *write_test(void *arg) {
     args *t_args = arg;
-    size_t size = 2*1000000000;
+    size_t size = 1500000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
