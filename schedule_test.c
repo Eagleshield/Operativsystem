@@ -36,6 +36,7 @@ int main(void) {
         pthread_join(threads[i], NULL);
     }
     system("sudo hdparm -W 1 /dev/sda");
+    system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
     return 0;
 }
 
