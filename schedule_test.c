@@ -58,7 +58,7 @@ void run_threads(func_ptr func, int num_threads) {
 
 void *write_test(void *arg) {
     args *t_args = arg;
-    size_t size = 1000000000;
+    size_t size = 2*1000000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
@@ -89,13 +89,11 @@ void *write_test(void *arg) {
     if(fp == NULL) {
         fprintf(stderr, "%s\n", "File not created.");
         return NULL;
-    }
-    for(int i = 0; i < 1; i++) {
-        fwrite(big_boy, size, 1, fp);;
-    }
+	}
+
+    fwrite(big_boy, size, 1, fp);
 
     free(big_boy);
-
     fclose(fp);
 
     /* Timer end */
