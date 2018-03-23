@@ -23,9 +23,9 @@ int main(void) {
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
     int num_threads = 5;
+    pthread_barrier_init(&barrier, NULL, num_threads);
 
     run_threads(&write_test, num_threads);
-    pthread_barrier_init(&barrier, NULL, num_threads);
     // int num_threads = 5;
 
     // pthread_t threads[num_threads];
