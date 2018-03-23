@@ -6,7 +6,11 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+typedef void *(*func_ptr)(void*);
+
+void run_threads(func_ptr func, int num_threads);
 void *write_test(void *args);
+
 pthread_barrier_t barrier;
 
 typedef struct {
@@ -14,31 +18,45 @@ typedef struct {
     char tids;
 } args;
 
-#define BILLION  1000000000L;
-
 int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    int num_threads = 5;
+    run_threads(&write_test, 5);
+    // int num_threads = 5;
 
-    pthread_t threads[num_threads];
+    // pthread_t threads[num_threads];
+    // args t_args[num_threads];
+    // pthread_barrier_init(&barrier, NULL, num_threads);
+
+    // for(int i = 0; i < num_threads; i++) {
+    //     t_args[i].tid = i;
+    //     t_args[i].tids = i + '0';
+    //     pthread_create(&threads[i], NULL, write_test, &t_args[i]);
+    // }
+
+    // for(int i = 0; i < num_threads; i++) {
+    //     pthread_join(threads[i], NULL);
+    // }
+    system("sudo hdparm -W 1 /dev/sda");
+    system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
+    system("cat /sys/block/sda/queue/scheduler");
+    return 0;
+}
+
+void run_threads(func_ptr func, int num_threads) {
+	pthread_t threads[num_threads];
     args t_args[num_threads];
-    pthread_barrier_init(&barrier, NULL, num_threads);
 
-    for(int i = 0; i < num_threads; i++) {
+	for(int i = 0; i < num_threads; i++) {
         t_args[i].tid = i;
         t_args[i].tids = i + '0';
-        pthread_create(&threads[i], NULL, write_test, &t_args[i]);
+        pthread_create(&threads[i], NULL, func, &t_args[i]);
     }
 
     for(int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
-    system("sudo hdparm -W 1 /dev/sda");
-    system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
-    system("cat /sys/block/sda/queue/scheduler");
-    return 0;
 }
 
 void *write_test(void *arg) {
@@ -51,15 +69,15 @@ void *write_test(void *arg) {
     }
     struct timeval tval_before, tval_after, tval_result;
     pthread_barrier_wait(&barrier);
+    
+    /* Timer start */
     gettimeofday(&tval_before, NULL);
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
-    //printf("%s\n", file_name);
 
 	FILE *fp;
 	if(t_args->tid%2 == 0) {
-		printf("%s\n", "Why you seg?");
         char *filep = malloc(32*sizeof(char));
         strcpy(filep, "../testdirectory/");
         strcat(filep, file_name);
@@ -83,6 +101,7 @@ void *write_test(void *arg) {
 
     fclose(fp);
 
+    /* Timer end */
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
 
