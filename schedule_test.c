@@ -22,7 +22,7 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    int num_threads = 8;
+    int num_threads = 6;
     pthread_barrier_init(&barrier, NULL, num_threads);
     
     printf("%s\n", "Noop write-test...");
