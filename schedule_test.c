@@ -24,26 +24,21 @@ int main(void) {
     system("sudo hdparm -W 0 /dev/sda");
     int num_threads = 5;
     pthread_barrier_init(&barrier, NULL, num_threads);
-
+    
+    printf("%s\n", "Noop write-test...");
     run_threads(&write_test, num_threads);
-    // int num_threads = 5;
 
-    // pthread_t threads[num_threads];
-    // args t_args[num_threads];
-    // pthread_barrier_init(&barrier, NULL, num_threads);
-
-    // for(int i = 0; i < num_threads; i++) {
-    //     t_args[i].tid = i;
-    //     t_args[i].tids = i + '0';
-    //     pthread_create(&threads[i], NULL, write_test, &t_args[i]);
-    // }
-
-    // for(int i = 0; i < num_threads; i++) {
-    //     pthread_join(threads[i], NULL);
-    // }
-    system("sudo hdparm -W 1 /dev/sda");
-    system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
+    system("echo deadline | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
+    printf("%s\n", "Deadline write-test...");
+    run_threads(&write_test, num_threads);
+
+	system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
+    system("cat /sys/block/sda/queue/scheduler");
+    printf("%s\n", "Cfq write-test...");
+    run_threads(&write_test, num_threads);    
+    
+    system("sudo hdparm -W 1 /dev/sda");
     return 0;
 }
 
