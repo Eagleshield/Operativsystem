@@ -22,7 +22,7 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    int num_threads = 4;
+    int num_threads = 8;
     pthread_barrier_init(&barrier, NULL, num_threads);
     
     printf("%s\n", "Noop write-test...");
@@ -58,7 +58,7 @@ void run_threads(func_ptr func, int num_threads) {
 
 void *write_test(void *arg) {
     args *t_args = arg;
-    size_t size = 1500000000;
+    size_t size = 1000000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
