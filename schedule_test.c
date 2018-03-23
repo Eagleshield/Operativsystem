@@ -79,10 +79,10 @@ void *write_test(void *arg) {
         strcpy(filep, "../testdirectory/");
         strcat(filep, file_name);
 		fp = fopen(filep, "w");
-	   printf("%s\n", filep);
+		//printf("%s\n", filep);
     } else {
 		fp = fopen(file_name, "w");
-        printf("%s\n", file_name);
+    	//printf("%s\n", file_name);
 	}
 
     perror("fopen");
