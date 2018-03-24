@@ -25,23 +25,41 @@ int main(void) {
     system("sudo hdparm -W 0 /dev/sda");
     int num_threads = 5;
     pthread_barrier_init(&barrier, NULL, num_threads);
-    
+    struct timeval tval_before, tval_after, tval_result;
+
     printf("%s\n", "Noop write-test...");
     //run_threads(&write_test_static, num_threads);
+    gettimeofday(&tval_before, NULL);
     run_threads(&write_test_dynamic, num_threads);
+    gettimeofday(&tval_after, NULL);
+    timersub(&tval_after, &tval_before, &tval_result);
+
+    printf("Noop total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
 
     system("echo deadline | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     printf("%s\n", "Deadline write-test...");
     //run_threads(&write_test_static, num_threads);
+
+    gettimeofday(&tval_before, NULL);
     run_threads(&write_test_dynamic, num_threads);
+    gettimeofday(&tval_after, NULL);
+    timersub(&tval_after, &tval_before, &tval_result);
+
+    printf("Deadline total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
 	system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     printf("%s\n", "Cfq write-test...");
     //run_threads(&write_test_static, num_threads);    
+    gettimeofday(&tval_before, NULL);
     run_threads(&write_test_dynamic, num_threads);
-    
+    gettimeofday(&tval_after, NULL);
+    timersub(&tval_after, &tval_before, &tval_result);
+
+    printf("Cfq total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
     system("sudo hdparm -W 1 /dev/sda");
     return 0;
 }
