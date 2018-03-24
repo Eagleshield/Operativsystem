@@ -24,7 +24,7 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    int num_threads = 4;
+    int num_threads = 5;
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
 
@@ -246,11 +246,12 @@ void *read_test(void *arg) {
     gettimeofday(&tval_before, NULL);
     fread(big_boy, size, 1, fp);
 
+    free(big_boy);
     fclose(fp);
+
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
 
     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-
 	return NULL;
 }
