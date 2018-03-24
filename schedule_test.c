@@ -170,14 +170,21 @@ void *write_test_dynamic(void *arg) {
         return NULL;
 	}
 
-    fwrite(small_boy, size[2], 1, fp);
-    fwrite(medium_boy, size[1], 1, fp);
-    fwrite(big_boy, size[0], 1, fp);
+    if(t_args->tid == 0) {
+	    fwrite(big_boy, size[0], 1, fp);
+    } else if(t_args->tid == 1) {
+    	for(int i = 0; i < 2; i++) {
+    		fwrite(medium_boy, size[1], 1, fp);
+    	}
+    } else {
+    	for(int i = 0; i < 10; i++) {
+    		fwrite(small_boy, size[2], 1, fp);
+    	}
+    }
 
-
-    free(big_boy);
-    free(medium_boy);
-    free(small_boy);
+	free(big_boy);
+	free(medium_boy);
+	free(small_boy);
     fclose(fp);
 
     /* Timer end */
