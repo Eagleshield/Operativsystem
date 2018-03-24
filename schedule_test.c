@@ -24,7 +24,7 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    int num_threads = 5;
+    int num_threads = 4;
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
 
