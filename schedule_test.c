@@ -173,11 +173,11 @@ void *write_test_dynamic(void *arg) {
     if(t_args->tid == 0) {
 	    fwrite(big_boy, size[0], 1, fp);
     } else if(t_args->tid == 1) {
-    	for(int i = 0; i < 2; i++) {
+    	for(int i = 0; i < 200; i++) {
     		fwrite(medium_boy, size[1], 1, fp);
     	}
     } else {
-    	for(int i = 0; i < 10; i++) {
+    	for(int i = 0; i < 1000; i++) {
     		fwrite(small_boy, size[2], 1, fp);
     	}
     }
