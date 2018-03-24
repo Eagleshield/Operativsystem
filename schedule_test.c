@@ -129,7 +129,7 @@ void *write_test_static(void *arg) {
 
 void *write_test_dynamic(void *arg) {
 	args *t_args = arg;
-    size_t size[] = {1000000000, 5000000, 1000000};
+    size_t size[] = {1000000000, 50000000, 1000000};
     char *big_boy = malloc(size[0]);
     char *medium_boy = malloc(size[1]);
     char *small_boy = malloc(size[2]);
@@ -173,7 +173,7 @@ void *write_test_dynamic(void *arg) {
     if(t_args->tid == 0) {
 	    fwrite(big_boy, size[0], 1, fp);
     } else if(t_args->tid == 1) {
-    	for(int i = 0; i < 200; i++) {
+    	for(int i = 0; i < 20; i++) {
     		fwrite(medium_boy, size[1], 1, fp);
     	}
     } else {
