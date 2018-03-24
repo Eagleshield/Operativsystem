@@ -246,12 +246,12 @@ void *read_test(void *arg) {
     gettimeofday(&tval_before, NULL);
     fread(big_boy, size, 1, fp);
 
-    free(big_boy);
     fclose(fp);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
 
     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    free(big_boy);
 	return NULL;
 }
