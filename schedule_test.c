@@ -32,8 +32,8 @@ int main(void) {
     
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads);
-    run_threads(&write_test_dynamic, num_threads);
+    run_threads(&write_test_static, num_threads);
+    //run_threads(&write_test_dynamic, num_threads);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -48,8 +48,8 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads);
-    run_threads(&write_test_dynamic, num_threads);
+    run_threads(&write_test_static, num_threads);
+    //run_threads(&write_test_dynamic, num_threads);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -63,8 +63,8 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads);    
-    run_threads(&write_test_dynamic, num_threads);
+    run_threads(&write_test_static, num_threads);    
+    //run_threads(&write_test_dynamic, num_threads);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
