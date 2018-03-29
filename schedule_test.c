@@ -101,12 +101,7 @@ void *write_test_static(void *arg) {
     for(int i = 0; i < size; i++) {
         big_boy[i] = 'X';
     }
-    struct timeval tval_before, tval_after, tval_result;
-    pthread_barrier_wait(&barrier);
     
-    /* Timer start */
-    gettimeofday(&tval_before, NULL);
-
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
 
@@ -116,29 +111,34 @@ void *write_test_static(void *arg) {
         strcpy(filep, "../testdirectory/");
         strcat(filep, file_name);
 		fp = fopen(filep, "w");
-		//printf("%s\n", filep);
     } else {
 		fp = fopen(file_name, "w");
-    	//printf("%s\n", file_name);
 	}
 
-    perror("fopen");
     if(fp == NULL) {
-        fprintf(stderr, "%s\n", "File not created.");
+        perror("fopen");
+        free(big_boy);
         return NULL;
 	}
 
+    struct timeval tval_before, tval_after, tval_result;
+    pthread_barrier_wait(&barrier);
+    /* Timer start */
+    gettimeofday(&tval_before, NULL);
+
     fwrite(big_boy, size, 1, fp);
 
-    free(big_boy);
     fclose(fp);
 
     /* Timer end */
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
+    
+    pthread_barrier_wait(&barrier);
 
     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
+    free(big_boy);
     return NULL;
 }
 
