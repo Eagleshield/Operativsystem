@@ -35,8 +35,8 @@ int main(void) {
     
     gettimeofday(&tval_before, NULL);
     
-    run_threads(&write_test_static, num_threads);
-    //run_threads(&write_test_dynamic, num_threads);
+    //run_threads(&write_test_static, num_threads);
+    run_threads(&write_test_dynamic, num_threads);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -51,8 +51,8 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    run_threads(&write_test_static, num_threads);
-    //run_threads(&write_test_dynamic, num_threads);
+    //run_threads(&write_test_static, num_threads);
+    run_threads(&write_test_dynamic, num_threads);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -66,8 +66,8 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    run_threads(&write_test_static, num_threads);    
-    //run_threads(&write_test_dynamic, num_threads);
+    //run_threads(&write_test_static, num_threads);    
+    run_threads(&write_test_dynamic, num_threads);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -189,9 +189,9 @@ void *write_test_dynamic(void *arg) {
     /* Timer start */
     gettimeofday(&tval_before, NULL);
 
-    if(t_args->tid == 0) {
+    if(t_args->tid < 2) {
 	    fwrite(big_boy, size[0], 1, fp);
-    } else if(t_args->tid == 1) {
+    } else if(t_args->tid == 2) {
     	for(int i = 0; i < 20; i++) {
     		fwrite(medium_boy, size[1], 1, fp);
     	}
@@ -208,7 +208,7 @@ void *write_test_dynamic(void *arg) {
     timersub(&tval_after, &tval_before, &tval_result);
     pthread_barrier_wait(&barrier);
 
-    printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    printf("(%d)Time elapsed: %ld.%06ld\n", t_args->tid, (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
 	free(big_boy);
 	free(medium_boy);
