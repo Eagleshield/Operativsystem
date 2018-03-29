@@ -120,7 +120,8 @@ void *write_test_static(void *arg) {
         free(big_boy);
         return NULL;
 	}
-
+	if(t_args->tid == 0)
+		printf("%s\n", "Static size test");
     struct timeval tval_before, tval_after, tval_result;
     pthread_barrier_wait(&barrier);
     /* Timer start */
@@ -179,6 +180,9 @@ void *write_test_dynamic(void *arg) {
         return NULL;
 	}
 
+	if(t_args->tid == 0)
+		printf("%s\n", "Dynamic size test");
+	
     struct timeval tval_before, tval_after, tval_result;
     pthread_barrier_wait(&barrier);
     
