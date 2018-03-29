@@ -101,7 +101,7 @@ void *write_test_static(void *arg) {
     for(int i = 0; i < size; i++) {
         big_boy[i] = 'X';
     }
-    
+
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
 
@@ -158,11 +158,6 @@ void *write_test_dynamic(void *arg) {
         	}
         }
     }
-    struct timeval tval_before, tval_after, tval_result;
-    pthread_barrier_wait(&barrier);
-    
-    /* Timer start */
-    gettimeofday(&tval_before, NULL);
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
     file_name[7] = t_args->tids;
@@ -179,11 +174,16 @@ void *write_test_dynamic(void *arg) {
     	//printf("%s\n", file_name);
 	}
 
-    perror("fopen");
     if(fp == NULL) {
-        fprintf(stderr, "%s\n", "File not created.");
+    	perror("fopen");
         return NULL;
 	}
+	
+    struct timeval tval_before, tval_after, tval_result;
+    pthread_barrier_wait(&barrier);
+    
+    /* Timer start */
+    gettimeofday(&tval_before, NULL);
 
     if(t_args->tid == 0) {
 	    fwrite(big_boy, size[0], 1, fp);
@@ -197,9 +197,6 @@ void *write_test_dynamic(void *arg) {
     	}
     }
 
-	free(big_boy);
-	free(medium_boy);
-	free(small_boy);
     fclose(fp);
 
     /* Timer end */
@@ -208,6 +205,9 @@ void *write_test_dynamic(void *arg) {
 
     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
+	free(big_boy);
+	free(medium_boy);
+	free(small_boy);
     return NULL;
 }
 
