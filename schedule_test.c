@@ -4,6 +4,9 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/time.h>
 
 typedef void *(*func_ptr)(void*);
@@ -212,39 +215,15 @@ void *read_test(void *arg) {
 	args *t_args = arg;
 	int size = 1000000000;
 	char *big_boy = malloc(size);
-
-	for(int i = 0; i < size; i++) {
-		big_boy[i] = 'X';
-	}
-
-	char file_name[9] = {'g','a','r','b','a','g','e','e'};
-    file_name[7] = t_args->tids;
-
-	FILE *fp;
-	if(t_args->tid%2 == 0) {
-        char *filep = malloc(32*sizeof(char));
-        strcpy(filep, "../testdirectory/");
-        strcat(filep, file_name);
-		fp = fopen(filep, "w");
-		//printf("%s\n", filep);
-    } else {
-		fp = fopen(file_name, "w");
-    	//printf("%s\n", file_name);
-	}
-
-    perror("fopen");
-    if(fp == NULL) {
-        fprintf(stderr, "%s\n", "File not created.");
-        return NULL;
-	}
-
-	fwrite(big_boy, size, 1, fp);
+	
+	FILE *fp = open("/dev/urandom", O_DIRECT | O_RDONLY);
+	
     struct timeval tval_before, tval_after, tval_result;
 
 	pthread_barrier_wait(&barrier);
  	/* Timer start */
     gettimeofday(&tval_before, NULL);
-    fread(big_boy, size, 1, fp);
+    read(fp, big_boy, size);
 
     fclose(fp);
 
