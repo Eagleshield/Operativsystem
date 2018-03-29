@@ -178,7 +178,7 @@ void *write_test_dynamic(void *arg) {
     	perror("fopen");
         return NULL;
 	}
-	
+
     struct timeval tval_before, tval_after, tval_result;
     pthread_barrier_wait(&barrier);
     
@@ -202,6 +202,7 @@ void *write_test_dynamic(void *arg) {
     /* Timer end */
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
+    pthread_barrier_wait(&barrier);
 
     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
