@@ -95,7 +95,7 @@ void run_threads(func_ptr func, int num_threads) {
 
 void *write_test_static(void *arg) {
     args *t_args = arg;
-    size_t size = 1000000;
+    size_t size = 1000000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
@@ -126,7 +126,7 @@ void *write_test_static(void *arg) {
     pthread_barrier_wait(&barrier);
     /* Timer start */
     gettimeofday(&tval_before, NULL);
-    for(int i = 0; i < 1000; i++)
+    //for(int i = 0; i < 1000; i++)
     	fwrite(big_boy, size, 1, fp);
 
     fclose(fp);
