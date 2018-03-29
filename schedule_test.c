@@ -11,7 +11,7 @@
 
 typedef void *(*func_ptr)(void*);
 
-void run_threads(func_ptr func, int num_threads);
+void run_threads(func_ptr func, int num_threads, int sched);
 void *write_test_static(void *args);
 void *write_test_dynamic(void *arg);
 void *read_test(void *arg);
@@ -21,6 +21,7 @@ pthread_barrier_t barrier;
 typedef struct {
     int tid;
     char tids;
+    FILE *res;
 } args;
 
 int main(void) {
@@ -36,7 +37,7 @@ int main(void) {
     gettimeofday(&tval_before, NULL);
     
     //run_threads(&write_test_static, num_threads);
-    run_threads(&write_test_dynamic, num_threads);
+    run_threads(&write_test_dynamic, num_threads, 0);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -52,7 +53,7 @@ int main(void) {
     gettimeofday(&tval_before, NULL);
     
     //run_threads(&write_test_static, num_threads);
-    run_threads(&write_test_dynamic, num_threads);
+    run_threads(&write_test_dynamic, num_threads, 1);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -67,7 +68,7 @@ int main(void) {
     gettimeofday(&tval_before, NULL);
     
     //run_threads(&write_test_static, num_threads);    
-    run_threads(&write_test_dynamic, num_threads);
+    run_threads(&write_test_dynamic, num_threads, 2);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -79,18 +80,35 @@ int main(void) {
     return 0;
 }
 
-void run_threads(func_ptr func, int num_threads) {
+void run_threads(func_ptr func, int num_threads, int sched) {
 	pthread_t threads[num_threads];
     args t_args[num_threads];
+    FILE *res;
+    switch(sched) {
+    	case 0:
+    		res = fopen("noop_res", "w");
+    		break;
+    	case 1:
+    		res = fopen("dead_res", "w");
+    		break;
+    	case 2:
+    		res = fopen("cfq_res", "w");
+    		break;
+    	default:
+    		printf("%s\n", "Unrecognised scheduler");
+    		return;
+    }
 
 	for(int i = 0; i < num_threads; i++) {
         t_args[i].tid = i;
         t_args[i].tids = i + '0';
+        t_args[i].res = res;
         pthread_create(&threads[i], NULL, func, &t_args[i]);
     }
     for(int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
+    fclose(res);
 }
 
 void *write_test_static(void *arg) {
@@ -238,6 +256,8 @@ void *write_test_dynamic(void *arg) {
     pthread_barrier_wait(&barrier);
 
     printf("(%d)Time elapsed: %ld.%06ld\n", t_args->tid, (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
+    fprintf(t_args->res, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
 	switch(t_args->tid) {
 		case 0:
