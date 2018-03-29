@@ -27,7 +27,7 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
-    int num_threads = 5;
+    int num_threads = 6;
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
 
@@ -182,7 +182,7 @@ void *write_test_dynamic(void *arg) {
 
 	if(t_args->tid == 0)
 		printf("%s\n", "Dynamic size test");
-	
+
     struct timeval tval_before, tval_after, tval_result;
     pthread_barrier_wait(&barrier);
     
