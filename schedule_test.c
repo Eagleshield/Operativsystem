@@ -189,9 +189,9 @@ void *write_test_dynamic(void *arg) {
     /* Timer start */
     gettimeofday(&tval_before, NULL);
 
-    if(t_args->tid < 2) {
+    if(t_args->tid < 1) {
 	    fwrite(big_boy, size[0], 1, fp);
-    } else if(t_args->tid == 2) {
+    } else if(t_args->tid < 3 && t_args->tid > 0) {
     	for(int i = 0; i < 20; i++) {
     		fwrite(medium_boy, size[1], 1, fp);
     	}
