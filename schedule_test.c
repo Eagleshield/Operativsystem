@@ -36,8 +36,8 @@ int main(void) {
     gettimeofday(&tval_before, NULL);
     
     //run_threads(&write_test_static, num_threads);
-    //run_threads(&write_test_dynamic, num_threads);
-    run_threads(&read_test, num_threads);
+    run_threads(&write_test_dynamic, num_threads);
+    //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -52,8 +52,8 @@ int main(void) {
     gettimeofday(&tval_before, NULL);
     
     //run_threads(&write_test_static, num_threads);
-    //run_threads(&write_test_dynamic, num_threads);
-    run_threads(&read_test, num_threads);
+    run_threads(&write_test_dynamic, num_threads);
+    //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -67,8 +67,8 @@ int main(void) {
     gettimeofday(&tval_before, NULL);
     
     //run_threads(&write_test_static, num_threads);    
-    //run_threads(&write_test_dynamic, num_threads);
-    run_threads(&read_test, num_threads);
+    run_threads(&write_test_dynamic, num_threads);
+    //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -211,26 +211,26 @@ void *write_test_dynamic(void *arg) {
     return NULL;
 }
 
-void *read_test(void *arg) {
-	args *t_args = arg;
-	int size = 1000000000;
-	char *big_boy = malloc(size);
+// void *read_test(void *arg) {
+// 	args *t_args = arg;
+// 	int size = 1000000000;
+// 	char *big_boy = malloc(size);
 	
-	FILE *fp = open("/dev/urandom", O_DIRECT | O_RDONLY);
+// 	FILE *fp = open("/dev/urandom", O_DIRECT | O_RDONLY);
 	
-    struct timeval tval_before, tval_after, tval_result;
+//     struct timeval tval_before, tval_after, tval_result;
 
-	pthread_barrier_wait(&barrier);
- 	/* Timer start */
-    gettimeofday(&tval_before, NULL);
-    read(fp, big_boy, size);
+// 	pthread_barrier_wait(&barrier);
+//  	/* Timer start */
+//     gettimeofday(&tval_before, NULL);
+//     read(fp, big_boy, size);
 
-    fclose(fp);
+//     fclose(fp);
 
-    gettimeofday(&tval_after, NULL);
-    timersub(&tval_after, &tval_before, &tval_result);
+//     gettimeofday(&tval_after, NULL);
+//     timersub(&tval_after, &tval_before, &tval_result);
 
-    printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-    free(big_boy);
-	return NULL;
-}
+//     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+//     free(big_boy);
+// 	return NULL;
+// }
