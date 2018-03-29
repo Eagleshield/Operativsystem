@@ -146,18 +146,47 @@ void *write_test_static(void *arg) {
 void *write_test_dynamic(void *arg) {
 	args *t_args = arg;
     size_t size[] = {1000000000, 50000000, 1000000};
-    char *big_boy = malloc(size[0]);
-    char *medium_boy = malloc(size[1]);
-    char *small_boy = malloc(size[2]);
-
-    for(int i = 0; i < size[0]; i++) {
-        big_boy[i] = 'X';
-        if(i < size[1]) {
-        	medium_boy[i] = 'Y';
-        	if(i < size[2]) {
-        		small_boy[i] = 'Z';
-        	}
-        }
+    char *big_boy, *medium_boy, *small_boy;
+    switch(t_args->tid) {
+    	case 0:
+    		big_boy = malloc(size[0]);
+    		for(int i = 0; i < size[0]; i++) {
+    			big_boy[i] = 'X';
+    		}
+    		break;
+    	case 1:
+    		big_boy = malloc(size[0]);
+    		for(int i = 0; i < size[0]; i++) {
+    			big_boy[i] = 'X';
+    		}
+    		break;
+    	case 2:
+    		medium_boy = malloc(size[1]);
+    		for(int i = 0; i < size[1]; i++) {
+    			medium_boy[i] = 'Y';
+    		}
+    		break;
+    	case 3:
+    		small_boy = malloc(size[2]);
+    		for(int i = 0; i < size[2]; i++) {
+    			small_boy[i] = 'Z';
+    		}
+    		break;
+    	case 4:
+    		small_boy = malloc(size[2]);
+    		for(int i = 0; i < size[2]; i++) {
+    			small_boy[i] = 'Z';
+    		}
+    		break;
+    	case 5:
+    		small_boy = malloc(size[2]);
+    		for(int i = 0; i < size[2]; i++) {
+    			small_boy[i] = 'Z';
+    		}
+    		break;
+    	default:
+    		printf("%s\n", "Thread id does not exist");
+    		return NULL;
     }
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
@@ -189,9 +218,9 @@ void *write_test_dynamic(void *arg) {
     /* Timer start */
     gettimeofday(&tval_before, NULL);
 
-    if(t_args->tid < 1) {
+    if(t_args->tid < 2) {
 	    fwrite(big_boy, size[0], 1, fp);
-    } else if(t_args->tid < 3 && t_args->tid > 0) {
+    } else if(t_args->tid == 2) {
     	for(int i = 0; i < 20; i++) {
     		fwrite(medium_boy, size[1], 1, fp);
     	}
@@ -210,9 +239,27 @@ void *write_test_dynamic(void *arg) {
 
     printf("(%d)Time elapsed: %ld.%06ld\n", t_args->tid, (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
-	free(big_boy);
-	free(medium_boy);
-	free(small_boy);
+	switch(t_args->tid) {
+		case 0:
+			free(big_boy);
+			break;
+		case 1:
+			free(big_boy);
+			break;
+		case 2:
+			free(medium_boy);
+			break;
+		case 3:
+			free(small_boy);
+			break;
+		case 4:
+			free(small_boy);
+			break;
+		case 5:
+			free(small_boy);
+			break;
+	}
+
     return NULL;
 }
 
