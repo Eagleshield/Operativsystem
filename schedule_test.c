@@ -157,6 +157,8 @@ void *write_test_static(void *arg) {
 
     printf("(%d)Time elapsed: %ld.%06ld\n", t_args->tid, (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
+    fprintf(t_args->res, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
     free(big_boy);
     return NULL;
 }
