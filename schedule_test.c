@@ -163,7 +163,7 @@ void *write_test_static(void *arg) {
 
 void *write_test_dynamic(void *arg) {
 	args *t_args = arg;
-    size_t size[] = {1000000000, 50000000, 125000000};
+    size_t size[] = {1000000000, 500000000, 250000000};
     char *big_boy, *medium_boy, *small_boy;
     switch(t_args->tid) {
     	case 0:
@@ -239,11 +239,11 @@ void *write_test_dynamic(void *arg) {
     if(t_args->tid < 2) {
 	    fwrite(big_boy, size[0], 1, fp);
     } else if(t_args->tid == 2) {
-    	for(int i = 0; i < 20; i++) {
+    	for(int i = 0; i < 2; i++) {
     		fwrite(medium_boy, size[1], 1, fp);
     	}
     } else {
-    	for(int i = 0; i < 8; i++) {
+    	for(int i = 0; i < 4; i++) {
     		fwrite(small_boy, size[2], 1, fp);
     	}
     }
