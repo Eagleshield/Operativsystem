@@ -144,7 +144,7 @@ void *write_test_static(void *arg) {
     pthread_barrier_wait(&barrier);
     /* Timer start */
     gettimeofday(&tval_before, NULL);
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < 4; i++)
     	fwrite(big_boy, size, 1, fp);
 
     fclose(fp);
