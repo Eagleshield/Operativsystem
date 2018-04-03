@@ -36,8 +36,8 @@ int main(void) {
     
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads);
-    run_threads(&write_test_dynamic, num_threads, 0);
+    run_threads(&write_test_static, num_threads, 0);
+    //run_threads(&write_test_dynamic, num_threads, 0);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -52,8 +52,8 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads);
-    run_threads(&write_test_dynamic, num_threads, 1);
+    run_threads(&write_test_static, num_threads, 1);
+    //run_threads(&write_test_dynamic, num_threads, 1);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -67,8 +67,8 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads);    
-    run_threads(&write_test_dynamic, num_threads, 2);
+    run_threads(&write_test_static, num_threads, 2);    
+    //run_threads(&write_test_dynamic, num_threads, 2);
     //run_threads(&read_test, num_threads);
 
     gettimeofday(&tval_after, NULL);
@@ -113,7 +113,7 @@ void run_threads(func_ptr func, int num_threads, int sched) {
 
 void *write_test_static(void *arg) {
     args *t_args = arg;
-    size_t size = 500000000;
+    size_t size = 250000000;
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
@@ -144,7 +144,7 @@ void *write_test_static(void *arg) {
     pthread_barrier_wait(&barrier);
     /* Timer start */
     gettimeofday(&tval_before, NULL);
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     	fwrite(big_boy, size, 1, fp);
 
     fclose(fp);
