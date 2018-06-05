@@ -10,6 +10,10 @@ for sched in $SCHEDLIST; do
 	echo $sched | sudo tee /sys/block/sda/queue/scheduler
 	cat /sys/block/sda/queue/scheduler
 
+	#BASELINE
+	for threads in {1..8}; do
+		echo $threads
+	done
 
 done
 

@@ -26,72 +26,22 @@ typedef struct {
     FILE *res;
 } args;
 
-int main(void) {
+int main(int argc, char **args) {
     int num_threads = 6;
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
     
-    //-------------------------------------------------------------------------
-
-    system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
-    system("cat /sys/block/sda/queue/scheduler");
-    system("sudo hdparm -W 0 /dev/sda");
-    system("echo 3 > sudo tee /proc/sys/vm/drop_caches");
-
-    printf("%s\n", "Noop write-test...");
-    
     gettimeofday(&tval_before, NULL);
     
-    //run_threads(&write_test_static, num_threads, 0);
-    //run_threads(&write_test_dynamic, num_threads, 0);
-    run_threads(&read_test, num_threads, 0);
+    // 0 run_threads(&write_test_static, num_threads, 0);
+    // 1 run_threads(&write_test_dynamic, num_threads, 0);
+    // 2 run_threads(&read_test, num_threads, 0);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
 
-    printf("Noop total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    printf("total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
-    //-------------------------------------------------------------------------
-
-    system("echo deadline | sudo tee /sys/block/sda/queue/scheduler");
-    system("cat /sys/block/sda/queue/scheduler");
-    system("echo 3 > sudo tee /proc/sys/vm/drop_caches");
-
-    printf("%s\n", "Deadline write-test...");
-
-    gettimeofday(&tval_before, NULL);
-    
-    //run_threads(&write_test_static, num_threads, 1);
-    //run_threads(&write_test_dynamic, num_threads, 1);
-    run_threads(&read_test, num_threads, 1);
-
-    gettimeofday(&tval_after, NULL);
-    timersub(&tval_after, &tval_before, &tval_result);
-
-    printf("Deadline total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-
-    //-------------------------------------------------------------------------
-
-	system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
-    system("cat /sys/block/sda/queue/scheduler");
-    system("echo 3 > sudo tee /proc/sys/vm/drop_caches");
-
-    printf("%s\n", "Cfq write-test...");
-
-    gettimeofday(&tval_before, NULL);
-    
-    //run_threads(&write_test_static, num_threads, 2);    
-    //run_threads(&write_test_dynamic, num_threads, 2);
-    run_threads(&read_test, num_threads, 2);
-
-    gettimeofday(&tval_after, NULL);
-    timersub(&tval_after, &tval_before, &tval_result);
-
-    printf("Cfq total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-
-    //-------------------------------------------------------------------------
-
-    system("sudo hdparm -W 1 /dev/sda");
     return 0;
 }
 
