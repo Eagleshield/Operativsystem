@@ -308,9 +308,9 @@ void *read_test(void *arg) {
 	if(t_args->tid < 2) {
 		pread(fp, big_boy, size, 0);
 	} else if(t_args->tid == 2) {
-		pread(fp, big_boy, size, 2*size);
+		pread(fp, big_boy, size, 50*size);
 	} else {
-		pread(fp, big_boy, size, 4*size);
+		pread(fp, big_boy, size, 100*size);
 	}
 
     gettimeofday(&tval_after, NULL);
