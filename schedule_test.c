@@ -300,7 +300,7 @@ void *write_test_dynamic(void *arg) {
 
 void *read_test(void *arg) {
 	args *t_args = arg;
-	unsigned int size = 1000;
+	unsigned int size = 1000000000;
 	char *big_boy = malloc(size);
 	int fp = open("/dev/sda5", O_RDONLY | O_SYNC);
 	perror("open");
@@ -312,11 +312,10 @@ void *read_test(void *arg) {
     gettimeofday(&tval_before, NULL);
 
 
-	ssize_t bytes = pread(fp, big_boy, size, (random() % 145) * 1000000000);
+	pread(fp, big_boy, size, (random() % 145) * 1000000000);
 
     close(fp);
 
-    printf("%ld\n", bytes);
     perror("pread");
 
     gettimeofday(&tval_after, NULL);
