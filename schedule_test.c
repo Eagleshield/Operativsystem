@@ -25,12 +25,15 @@ typedef struct {
 } args;
 
 int main(void) {
-    system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
-    system("cat /sys/block/sda/queue/scheduler");
-    system("sudo hdparm -W 0 /dev/sda");
     int num_threads = 6;
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
+    
+    //-------------------------------------------------------------------------
+
+    system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
+    system("cat /sys/block/sda/queue/scheduler");
+    system("sudo hdparm -W 0 /dev/sda");
 
     printf("%s\n", "Noop write-test...");
     
@@ -45,6 +48,7 @@ int main(void) {
 
     printf("Noop total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
+    //-------------------------------------------------------------------------
 
     system("echo deadline | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
@@ -61,6 +65,8 @@ int main(void) {
 
     printf("Deadline total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
+    //-------------------------------------------------------------------------
+
 	system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     printf("%s\n", "Cfq write-test...");
@@ -75,6 +81,8 @@ int main(void) {
     timersub(&tval_after, &tval_before, &tval_result);
 
     printf("Cfq total elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
+    //-------------------------------------------------------------------------
 
     system("sudo hdparm -W 1 /dev/sda");
     return 0;
