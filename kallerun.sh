@@ -18,8 +18,8 @@ for sched in $SCHEDLIST; do
 	for (( i = 0; i < $runs; i++ )); do
 		for (( j = 0; j < 5; j++ )); do
 			echo 3 > /proc/sys/vm/drop_caches
-			./rt $j >> "results/result_rt_"$sched"_"$i"_"$j
-			python parse_results.py "results/result_rt_"$sched"_"$i"_"$j
+			sudo ./rt $j >> "results/result_rt_"$sched"_"$i"_"$j
+			#python parse_results.py "results/result_rt_"$sched"_"$i"_"$j
  			rm "results/result_rt_"$sched"_"$i"_"$j
 		done
 	done
