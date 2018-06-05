@@ -311,12 +311,13 @@ void *read_test(void *arg) {
     gettimeofday(&tval_before, NULL);
 
 	if(t_args->tid < 2) {
-		pread(fp, big_boy, size, (random() % 145) * size);
+		pread(fp, big_boy, size, (random() % 145) * 1000000000);
 	} else if(t_args->tid == 2) {
-		pread(fp, big_boy, size, (random() % 145) * size);
+		pread(fp, big_boy, size, (random() % 145) * 1000000000);
 	} else {
-		pread(fp, big_boy, size, (random() % 145) * size);
+		pread(fp, big_boy, size, (random() % 145) * 1000000000);
 	}
+    close(fp);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -325,7 +326,6 @@ void *read_test(void *arg) {
 
     fprintf(t_args->res, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
-    close(fp);
     free(big_boy);
 	return NULL;
 }
