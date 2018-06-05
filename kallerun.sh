@@ -7,17 +7,17 @@ gcc kalletest.c -o rt -lpthread
 #echo 3 > /proc/sys/vm/drop_caches
 
 #disable Cache
-sudo hdparm -W 0 /dev/sdd
+sudo hdparm -W 0 /dev/sda
 mkdir results
 runs=$1
 
 for sched in $SCHEDLIST; do
-	echo $sched | sudo tee /sys/block/sdd/queue/scheduler
-	cat /sys/block/sdd/queue/scheduler
+	echo $sched | sudo tee /sys/block/sda/queue/scheduler
+	cat /sys/block/sda/queue/scheduler
 
 	for (( i = 0; i < $runs; i++ )); do
 		for (( j = 0; j < 5; j++ )); do
-			echo 3 > /proc/sys/vm/drop_caches
+			echo 3 > sudo tee /proc/sys/vm/drop_caches
 			sudo ./rt $j >> "results/result_rt_"$sched"_"$i"_"$j
 			#python parse_results.py "results/result_rt_"$sched"_"$i"_"$j
  			rm "results/result_rt_"$sched"_"$i"_"$j
@@ -27,5 +27,5 @@ done
 
 #python merge_results.py
 
-sudo hdparm -W 1 /dev/sdd
+sudo hdparm -W 1 /dev/sda
 rm wt rt rwt
