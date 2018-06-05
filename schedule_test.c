@@ -315,7 +315,7 @@ void *read_test(void *arg) {
 
     close(fp);
 
-    printf("%lu\n", bytes);
+    printf("%ld\n", bytes);
     perror("pread");
 
     gettimeofday(&tval_after, NULL);
