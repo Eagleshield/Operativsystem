@@ -14,7 +14,7 @@
 typedef void *(*func_ptr)(void*);
 
 void run_threads(func_ptr func, int num_threads, int sched);
-void *write_test_static(void *args);
+void *write_test_static(void *arg);
 void *write_test_dynamic(void *arg);
 void *read_test(void *arg);
 
