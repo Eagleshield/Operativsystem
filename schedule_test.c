@@ -300,7 +300,7 @@ void *write_test_dynamic(void *arg) {
 
 void *read_test(void *arg) {
 	args *t_args = arg;
-	unsigned int size = 4000000000;
+	unsigned int size = 1000;
 	char *big_boy = malloc(size);
 	int fp = open("/dev/sda5", O_RDONLY | O_SYNC);;
 	
