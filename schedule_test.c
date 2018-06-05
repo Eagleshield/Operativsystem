@@ -302,7 +302,7 @@ void *read_test(void *arg) {
 	args *t_args = arg;
 	unsigned int size = 4000000000;
 	char *big_boy = malloc(size);
-	int fp = open("/dev/sda", O_RDONLY | O_SYNC);;
+	int fp = open("/dev/sda5", O_RDONLY | O_SYNC);;
 	
     struct timeval tval_before, tval_after, tval_result;
 
@@ -310,19 +310,18 @@ void *read_test(void *arg) {
  	/* Timer start */
     gettimeofday(&tval_before, NULL);
 
-	if(t_args->tid < 2) {
-		pread(fp, big_boy, size, (random() % 145) * 1000000000);
-	} else if(t_args->tid == 2) {
-		pread(fp, big_boy, size, (random() % 145) * 1000000000);
-	} else {
-		pread(fp, big_boy, size, (random() % 145) * 1000000000);
-	}
+
+	ssize_t bytes = pread(fp, big_boy, size, (random() % 145) * 1000000000);
+
     close(fp);
+
+    printf("%lu\n", bytes);
+    perror("pread");
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
 
-    printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    //printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
     fprintf(t_args->res, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
