@@ -311,11 +311,11 @@ void *read_test(void *arg) {
     gettimeofday(&tval_before, NULL);
 
 	if(t_args->tid < 2) {
-		pread(fp, big_boy, size, 0);
+		pread(fp, big_boy, size, (random() % 145) * size);
 	} else if(t_args->tid == 2) {
-		pread(fp, big_boy, size, 50*size);
+		pread(fp, big_boy, size, (random() % 145) * size);
 	} else {
-		pread(fp, big_boy, size, 100*size);
+		pread(fp, big_boy, size, (random() % 145) * size);
 	}
 
     gettimeofday(&tval_after, NULL);
