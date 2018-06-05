@@ -102,12 +102,15 @@ void run_threads(func_ptr func, int num_threads, int sched) {
     switch(sched) {
     	case 0:
     		res = fopen("noop_res", "a");
+    		perror("fopen noop");
     		break;
     	case 1:
     		res = fopen("dead_res", "a");
+    		perror("fopen dead");
     		break;
     	case 2:
     		res = fopen("cfq_res", "a");
+    		perror("fopen cfq");
     		break;
     	default:
     		printf("%s\n", "Unrecognised scheduler");
