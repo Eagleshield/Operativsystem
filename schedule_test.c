@@ -297,7 +297,7 @@ void *read_test(void *arg) {
 	args *t_args = arg;
 	int size = 1000000000;
 	char *big_boy = malloc(size);
-	int fp = open("/dev/sda5", O_DIRECT | O_RDONLY);;
+	int fp = open("/dev/sda5", O_DIRECT | O_RDONLY | O_SYNC);;
 	
     struct timeval tval_before, tval_after, tval_result;
 
