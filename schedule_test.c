@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,9 +41,9 @@ int main(void) {
     
     gettimeofday(&tval_before, NULL);
     
-    run_threads(&write_test_static, num_threads, 0);
+    //run_threads(&write_test_static, num_threads, 0);
     //run_threads(&write_test_dynamic, num_threads, 0);
-    //run_threads(&read_test, num_threads);
+    run_threads(&read_test, num_threads, 0);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -56,9 +58,9 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    run_threads(&write_test_static, num_threads, 1);
+    //run_threads(&write_test_static, num_threads, 1);
     //run_threads(&write_test_dynamic, num_threads, 1);
-    //run_threads(&read_test, num_threads);
+    run_threads(&read_test, num_threads, 0);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -73,9 +75,9 @@ int main(void) {
 
     gettimeofday(&tval_before, NULL);
     
-    run_threads(&write_test_static, num_threads, 2);    
+    //run_threads(&write_test_static, num_threads, 2);    
     //run_threads(&write_test_dynamic, num_threads, 2);
-    //run_threads(&read_test, num_threads);
+    run_threads(&read_test, num_threads, 0);
 
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
@@ -125,7 +127,7 @@ void *write_test_static(void *arg) {
     char *big_boy = malloc(size);
 
     for(int i = 0; i < size; i++) {
-        big_boy[i] = 'X';
+        big_boy[i] = 'A' + (random() % 26);
     }
 
     char file_name[9] = {'g','a','r','b','a','g','e','e'};
@@ -179,37 +181,37 @@ void *write_test_dynamic(void *arg) {
     	case 0:
     		big_boy = malloc(size[0]);
     		for(int i = 0; i < size[0]; i++) {
-    			big_boy[i] = 'X';
+		        big_boy[i] = 'A' + (random() % 26);
     		}
     		break;
     	case 1:
     		big_boy = malloc(size[0]);
     		for(int i = 0; i < size[0]; i++) {
-    			big_boy[i] = 'X';
+    			big_boy[i] = 'A' + (random() % 26);
     		}
     		break;
     	case 2:
     		medium_boy = malloc(size[1]);
     		for(int i = 0; i < size[1]; i++) {
-    			medium_boy[i] = 'Y';
+    			medium_boy[i] = 'A' + (random() % 26);
     		}
     		break;
     	case 3:
     		small_boy = malloc(size[2]);
     		for(int i = 0; i < size[2]; i++) {
-    			small_boy[i] = 'Z';
+    			small_boy[i] = 'A' + (random() % 26);
     		}
     		break;
     	case 4:
     		small_boy = malloc(size[2]);
     		for(int i = 0; i < size[2]; i++) {
-    			small_boy[i] = 'Z';
+    			small_boy[i] = 'A' + (random() % 26);
     		}
     		break;
     	case 5:
     		small_boy = malloc(size[2]);
     		for(int i = 0; i < size[2]; i++) {
-    			small_boy[i] = 'Z';
+    			small_boy[i] = 'A' + (random() % 26);
     		}
     		break;
     	default:
@@ -226,10 +228,8 @@ void *write_test_dynamic(void *arg) {
         strcpy(filep, "../testdirectory/");
         strcat(filep, file_name);
 		fp = fopen(filep, "w");
-		//printf("%s\n", filep);
     } else {
 		fp = fopen(file_name, "w");
-    	//printf("%s\n", file_name);
 	}
 
     if(fp == NULL) {
@@ -293,26 +293,34 @@ void *write_test_dynamic(void *arg) {
     return NULL;
 }
 
-// void *read_test(void *arg) {
-// 	args *t_args = arg;
-// 	int size = 1000000000;
-// 	char *big_boy = malloc(size);
+void *read_test(void *arg) {
+	args *t_args = arg;
+	int size = 1000000000;
+	char *big_boy = malloc(size);
+	int fp = open("/dev/sda5", O_DIRECT | O_RDONLY);;
 	
-// 	FILE *fp = open("/dev/urandom", O_DIRECT | O_RDONLY);
-	
-//     struct timeval tval_before, tval_after, tval_result;
+    struct timeval tval_before, tval_after, tval_result;
 
-// 	pthread_barrier_wait(&barrier);
-//  	/* Timer start */
-//     gettimeofday(&tval_before, NULL);
-//     read(fp, big_boy, size);
+	pthread_barrier_wait(&barrier);
+ 	/* Timer start */
+    gettimeofday(&tval_before, NULL);
 
-//     fclose(fp);
+	if(t_args->tid < 2) {
+		pread(fp, big_boy, size, 0);
+	} else if(t_args->tid == 2) {
+		pread(fp, big_boy, size, 2*size);
+	} else {
+		pread(fp, big_boy, size, 4*size);
+	}
 
-//     gettimeofday(&tval_after, NULL);
-//     timersub(&tval_after, &tval_before, &tval_result);
+    gettimeofday(&tval_after, NULL);
+    timersub(&tval_after, &tval_before, &tval_result);
 
-//     printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-//     free(big_boy);
-// 	return NULL;
-// }
+    printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
+    fprintf(t_args->res, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+
+    close(fp);
+    free(big_boy);
+	return NULL;
+}
