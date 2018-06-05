@@ -36,6 +36,7 @@ int main(void) {
     system("echo noop | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
     system("sudo hdparm -W 0 /dev/sda");
+    system("echo 3 > sudo tee /proc/sys/vm/drop_caches");
 
     printf("%s\n", "Noop write-test...");
     
@@ -54,6 +55,8 @@ int main(void) {
 
     system("echo deadline | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
+    system("echo 3 > sudo tee /proc/sys/vm/drop_caches");
+
     printf("%s\n", "Deadline write-test...");
 
     gettimeofday(&tval_before, NULL);
@@ -71,6 +74,8 @@ int main(void) {
 
 	system("echo cfq | sudo tee /sys/block/sda/queue/scheduler");
     system("cat /sys/block/sda/queue/scheduler");
+    system("echo 3 > sudo tee /proc/sys/vm/drop_caches");
+
     printf("%s\n", "Cfq write-test...");
 
     gettimeofday(&tval_before, NULL);
