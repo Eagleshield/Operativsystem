@@ -19,8 +19,6 @@ for sched in $SCHEDLIST; do
 		for (( j = 0; j < 5; j++ )); do
 			echo 3 > sudo tee /proc/sys/vm/drop_caches
 			sudo ./rt $j >> "results/result_rt_"$sched"_"$i"_"$j
-			#python parse_results.py "results/result_rt_"$sched"_"$i"_"$j
- 			rm "results/result_rt_"$sched"_"$i"_"$j
 		done
 	done
 done
@@ -28,4 +26,4 @@ done
 #python merge_results.py
 
 sudo hdparm -W 1 /dev/sda
-rm wt rt rwt
+rm rt
