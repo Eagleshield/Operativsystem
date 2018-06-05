@@ -303,7 +303,6 @@ void *read_test(void *arg) {
 	unsigned int size = 1000000000;
 	char *big_boy = malloc(size);
 	int fp = open("/dev/sda5", O_RDONLY | O_SYNC);
-	perror("open");
 	
     struct timeval tval_before, tval_after, tval_result;
 
@@ -311,17 +310,14 @@ void *read_test(void *arg) {
  	/* Timer start */
     gettimeofday(&tval_before, NULL);
 
-
 	pread(fp, big_boy, size, (random() % 145) * 1000000000);
 
     close(fp);
 
-    perror("pread");
-
     gettimeofday(&tval_after, NULL);
     timersub(&tval_after, &tval_before, &tval_result);
 
-    //printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
     fprintf(t_args->res, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
