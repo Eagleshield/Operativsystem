@@ -53,8 +53,28 @@ int main(int argc, char **args) {
     int fd = open(results, O_CREAT | O_APPEND, 0777);
     perror("open");
     
+    pthread_t threads1[num_threads - 1];
+    argum t_args1[num_threads];
+
+	for(int i = 0; i < num_threads; i++) {
+        t_args1[i].tid = i;
+        t_args1[i].tids = i + '0';
+        t_args1[i].sched = sched;
+        t_args1[i].size = (unsigned int)(total_size/num_threads);
+    }
+    int k = 0;
+	for(; k < (num_threads - 1); k++) {
+		pthread_create(&threads1[k], NULL, &write_test_dynamic, &t_args1[k]);
+	}
+	write_test_dynamic(&t_args1[k]);
+
     gettimeofday(&tval_before, NULL);
-    run_threads(&write_test_dynamic, num_threads, sched, total_size);
+    
+    for(int i = 0; i < num_threads; i++) {
+        pthread_join(threads1[i], NULL);
+    }
+
+    //run_threads(&write_test_dynamic, num_threads, sched, total_size);
     gettimeofday(&tval_after, NULL);
 
     timersub(&tval_after, &tval_before, &tval_result);
