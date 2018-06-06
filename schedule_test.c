@@ -32,8 +32,6 @@ typedef struct {
 
 int main(int argc, char **args) {
     //ARGS: num_threads total_size scheduler
-	if(argc != 3)
-		return -1;
 
     int num_threads	= stringToInt(args[1]);
     int total_size	= stringToInt(args[2]);
