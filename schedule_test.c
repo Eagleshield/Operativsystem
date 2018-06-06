@@ -50,7 +50,7 @@ int main(int argc, char **args) {
     strcat(results, "write");
     strcat(results, args[1]);
 
-    int fd = open(results, O_RDWR|O_CREAT|O_APPEND|O_TRUNC|O_SYNC, 0777);
+    int fd = open(results, O_RDWR|O_CREAT|O_APPEND|O_SYNC, 0777);
     perror("open");
     
     gettimeofday(&tval_before, NULL);
@@ -72,7 +72,7 @@ int main(int argc, char **args) {
     strcat(results2, "read");
     strcat(results2, args[1]);
 
-    int fd2 = open(results2, O_RDWR|O_CREAT|O_APPEND|O_TRUNC|O_SYNC, 0777);
+    int fd2 = open(results2, O_RDWR|O_CREAT|O_APPEND|O_SYNC, 0777);
     perror("open2");
     
     
