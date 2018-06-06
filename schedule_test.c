@@ -37,7 +37,7 @@ int main(int argc, char **args) {
     unsigned int total_size		= stringToInt(args[2]);
     char *sched 				= args[3];
 
-    printf("threads: %d\nsize: %d\nscheduler: %s\n", num_threads, total_size, sched);
+    printf("threads: %d\nsize: %d\nscheduler: %s\n\n", num_threads, total_size, sched);
 
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
@@ -133,12 +133,12 @@ void *write_test_dynamic(void *arg) {
         strcpy(filep, "../testdirectory/");
         strcat(filep, t_args->sched);
         strcat(filep, file_name);
-		fp = open(filep, O_RDWR|O_CREAT|O_APPEND|O_TRUNC|O_SYNC, 0777);
+		fp = open(filep, O_RDWR|O_CREAT|O_APPEND|O_SYNC, 0777);
 		perror("writeopen");
     } else {
     	strcpy(filep, t_args->sched);
     	strcat(filep, file_name);
-		fp = open(filep, O_RDWR|O_CREAT|O_APPEND|O_TRUNC|O_SYNC, 0777);
+		fp = open(filep, O_RDWR|O_CREAT|O_APPEND|O_SYNC, 0777);
 		perror("writeopen");
 	}
 
