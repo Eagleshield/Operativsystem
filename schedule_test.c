@@ -84,7 +84,7 @@ int main(int argc, char **args) {
 
     char *str2 = malloc(30*sizeof(char));
     sprintf(str2, "total time: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-    printf("%s\n", str);
+    printf("%s\n", str2);
     write(fd2, str2, 30);
     perror("write2");
     free(results2);
