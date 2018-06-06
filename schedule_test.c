@@ -177,9 +177,9 @@ void *read_test(void *arg) {
 	pread(fp, big_boy, size, (random() % 145) * 1000000000);
 	perror("readpread");
 
+    free(big_boy);
     close(fp);
 
-    free(big_boy);
 	return NULL;
 }
 
