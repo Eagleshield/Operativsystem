@@ -14,28 +14,30 @@
 
 typedef void *(*func_ptr)(void*);
 
-void run_threads(func_ptr func, int num_threads, char *sched, int size);
+void run_threads(func_ptr func, int num_threads, char *sched, unsigned int size);
 void *write_test_static(void *arg);
 void *write_test_dynamic(void *arg);
 void *read_test(void *arg);
-int stringToInt(char *string);
+unsigned int stringToInt(char *string);
 
 pthread_barrier_t barrier;
 
 typedef struct {
-    int size;
+    unsigned int size;
     int tid;
     char tids;
     int res_fd;
     char *sched;
-} args;
+} argum;
 
 int main(int argc, char **args) {
     //ARGS: num_threads total_size scheduler
 
-    int num_threads	= stringToInt(args[1]);
-    int total_size	= stringToInt(args[2]);
-    char *sched 	= args[3];
+    unsigned int num_threads	= stringToInt(args[1]);
+    unsigned int total_size		= stringToInt(args[2]);
+    char *sched 				= args[3];
+
+    printf("threads: %d\nsize: %d\nscheduler: %s\n", num_threads, total_size, sched);
 
     pthread_barrier_init(&barrier, NULL, num_threads);
     struct timeval tval_before, tval_after, tval_result;
@@ -49,6 +51,7 @@ int main(int argc, char **args) {
     strcat(results, args[1]);
 
     int fd = open(results, O_CREAT | O_APPEND, 0777);
+    perror("open");
     
     gettimeofday(&tval_before, NULL);
     run_threads(&write_test_dynamic, num_threads, sched, total_size);
@@ -56,9 +59,12 @@ int main(int argc, char **args) {
 
     timersub(&tval_after, &tval_before, &tval_result);
     char *str = malloc(30*sizeof(char));
-    sprintf(str, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    sprintf(str, "total time: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    printf("%s\n", str);
     write(fd, str, 30);
+    perror("write");
     free(results);
+    close(fd);
     //-------------------------------------------------------------------------
     char *results2 = malloc(32*sizeof(char));
 
@@ -67,40 +73,59 @@ int main(int argc, char **args) {
     strcat(results2, args[1]);
 
     int fd2 = open(results2, O_CREAT | O_APPEND, 0777);
+    perror("open2");
     
-    gettimeofday(&tval_before, NULL);
-    run_threads(&read_test, num_threads, sched, total_size);
-    gettimeofday(&tval_after, NULL);
-
-    timersub(&tval_after, &tval_before, &tval_result);
-
-    char *str2 = malloc(30*sizeof(char));
-    sprintf(str2, "%ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-    write(fd2, str2, 30);
-
-    free(results2);
-
-    return 0;
-}
-
-int stringToInt(char *string) {
-	int len = strlen(string);
-	double res = 0;
-	for (int i = 0; i < len; i++) {
-		res += (pow(10, (len - i)) * (string[i] - '0'));
-	}
-	return (int)res;
-}
-
-void run_threads(func_ptr func, int num_threads, char *sched, int size) {
+    
 	pthread_t threads[num_threads];
-    args t_args[num_threads];
+    argum t_args[num_threads];
 
 	for(int i = 0; i < num_threads; i++) {
         t_args[i].tid = i;
         t_args[i].tids = i + '0';
         t_args[i].sched = sched;
-        t_args[i].size = (int)(size/num_threads);
+        t_args[i].size = (unsigned int)(total_size/num_threads);
+        pthread_create(&threads[i], NULL, &read_test, &t_args[i]);
+    }
+    gettimeofday(&tval_before, NULL);
+
+    for(int i = 0; i < num_threads; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    gettimeofday(&tval_after, NULL);
+
+    timersub(&tval_after, &tval_before, &tval_result);
+
+    char *str2 = malloc(30*sizeof(char));
+    sprintf(str2, "total time: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+    printf("%s\n", str);
+    write(fd2, str2, 30);
+    perror("write2");
+    free(results2);
+    close(fd2);
+
+    printf("Ending\n");
+
+    return 0;
+}
+
+unsigned int stringToInt(char *string) {
+	int len = strlen(string);
+	double res = 0;
+	for (int i = 0; i < len; i++) {
+		res += (pow(10, ((len - 1) - i)) * (int)(string[i] - '0'));
+	}
+	return (unsigned int)res;
+}
+
+void run_threads(func_ptr func, int num_threads, char *sched, unsigned int size) {
+	pthread_t threads[num_threads];
+    argum t_args[num_threads];
+
+	for(int i = 0; i < num_threads; i++) {
+        t_args[i].tid = i;
+        t_args[i].tids = i + '0';
+        t_args[i].sched = sched;
+        t_args[i].size = (unsigned int)(size/num_threads);
         pthread_create(&threads[i], NULL, func, &t_args[i]);
     }
     for(int i = 0; i < num_threads; i++) {
@@ -110,7 +135,7 @@ void run_threads(func_ptr func, int num_threads, char *sched, int size) {
 
 
 void *write_test_dynamic(void *arg) {
-	args *t_args = arg;
+	argum *t_args = arg;
     
     char *filep = malloc(32*sizeof(char));
     char file_name[9] = {'w','r','i','t','e','e'};
@@ -123,37 +148,49 @@ void *write_test_dynamic(void *arg) {
         strcpy(filep, "../testdirectory/");
         strcat(filep, t_args->sched);
         strcat(filep, file_name);
-		fp = open(filep, O_WRONLY);
+		fp = open(filep, O_CREAT | O_TRUNC, 0777);
+		perror("writeopen");
     } else {
     	strcpy(filep, t_args->sched);
     	strcat(filep, file_name);
-		fp = open(filep, O_WRONLY);
+		fp = open(filep, O_CREAT | O_TRUNC, 0777);
+		perror("writeopen");
 	}
 
-    pthread_barrier_wait(&barrier);
-    
     char *file = malloc(t_args->size*sizeof(char));
+    
+    if(file == NULL) {
+    	fprintf(stderr, "malloc failed\n");
+    }
+    
+    pthread_barrier_wait(&barrier);
 
-	write(fp, file, t_args->size);    
-
-    close(fp);
+	write(fp, file, t_args->size);
+	perror("writewrite");
 
     pthread_barrier_wait(&barrier);
+
 
     free(filep);
     free(file);
+    close(fp);
     return NULL;
 }
 
 void *read_test(void *arg) {
-	args *t_args = arg;
-	int size = t_args->size;
+	argum *t_args = arg;
+	unsigned int size = t_args->size;
 	char *big_boy = malloc(size);
+	
+	printf("size: %u\n", size);
+
 	int fp = open("/dev/sda5", O_RDONLY | O_SYNC);
+	perror("readopen");
 	
 	pthread_barrier_wait(&barrier);
 
 	pread(fp, big_boy, size, (random() % 145) * 1000000000);
+	perror("readpread");
 
     close(fp);
 
