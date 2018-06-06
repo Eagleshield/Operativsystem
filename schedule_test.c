@@ -50,7 +50,7 @@ int main(int argc, char **args) {
     strcat(results, "write");
     strcat(results, args[1]);
 
-    int fd = open(results, O_CREAT | O_APPEND, 0777);
+    int fd = open(results, O_CREAT | O_APPEND | O_DIRECT, 0777);
     perror("open");
     
     gettimeofday(&tval_before, NULL);
@@ -72,7 +72,7 @@ int main(int argc, char **args) {
     strcat(results2, "read");
     strcat(results2, args[1]);
 
-    int fd2 = open(results2, O_CREAT | O_APPEND, 0777);
+    int fd2 = open(results2, O_CREAT | O_APPEND | O_DIRECT, 0777);
     perror("open2");
     
     
@@ -165,7 +165,7 @@ void *write_test_dynamic(void *arg) {
 void *read_test(void *arg) {
 	argum *t_args = arg;
 	unsigned int size = t_args->size;
-	char *big_boy = malloc(size);
+	char *big_boy = malloc(size*sizeof(char));
 	
 	printf("size: %u\n", size);
 
