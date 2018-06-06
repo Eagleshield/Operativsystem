@@ -53,28 +53,8 @@ int main(int argc, char **args) {
     int fd = open(results, O_CREAT | O_APPEND, 0777);
     perror("open");
     
-    pthread_t threads1[num_threads - 1];
-    argum t_args1[num_threads];
-
-	for(int i = 0; i < num_threads; i++) {
-        t_args1[i].tid = i;
-        t_args1[i].tids = i + '0';
-        t_args1[i].sched = sched;
-        t_args1[i].size = (unsigned int)(total_size/num_threads);
-    }
-    int k = 0;
-	for(; k < (num_threads - 1); k++) {
-		pthread_create(&threads1[k], NULL, &write_test_dynamic, &t_args1[k]);
-	}
     gettimeofday(&tval_before, NULL);
-
-	write_test_dynamic(&t_args1[k]);
-    
-    for(int i = 0; i < num_threads - 1; i++) {
-        pthread_join(threads1[i], NULL);
-    }
-
-    //run_threads(&write_test_dynamic, num_threads, sched, total_size);
+    run_threads(&write_test_dynamic, num_threads, sched, total_size);
     gettimeofday(&tval_after, NULL);
 
     timersub(&tval_after, &tval_before, &tval_result);
@@ -96,26 +76,8 @@ int main(int argc, char **args) {
     perror("open2");
     
     
-	pthread_t threads[num_threads - 1];
-    argum t_args[num_threads];
-
-	for(int i = 0; i < num_threads; i++) {
-        t_args[i].tid = i;
-        t_args[i].tids = i + '0';
-        t_args[i].sched = sched;
-        t_args[i].size = (unsigned int)(total_size/num_threads);
-    }
-    k = 0;
-    for(; k < (num_threads - 1); k++) {
-        pthread_create(&threads[k], NULL, &read_test, &t_args[k]);
-    }
     gettimeofday(&tval_before, NULL);
-
-    read_test(&t_args[k]);
-    
-    for(int i = 0; i < num_threads - 1; i++) {
-        pthread_join(threads[i], NULL);
-    }
+    run_threads(&read_test, num_threads, sched, total_size);
     gettimeofday(&tval_after, NULL);
 
     timersub(&tval_after, &tval_before, &tval_result);
@@ -128,8 +90,6 @@ int main(int argc, char **args) {
     free(results2);
     close(fd2);
 
-    printf("Ending\n");
-
     return 0;
 }
 
@@ -141,7 +101,7 @@ unsigned int stringToInt(char *string) {
 	}
 	return (unsigned int)res;
 }
-/*
+
 void run_threads(func_ptr func, int num_threads, char *sched, unsigned int size) {
 	pthread_t threads[num_threads];
     argum t_args[num_threads];
@@ -156,7 +116,7 @@ void run_threads(func_ptr func, int num_threads, char *sched, unsigned int size)
     for(int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
-}*/
+}
 
 
 void *write_test_dynamic(void *arg) {
